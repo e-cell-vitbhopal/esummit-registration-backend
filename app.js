@@ -1,6 +1,7 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
 const fs = require("fs").promises; // Import the fs module
+const ejs = require("ejs"); // Import the EJS templating engine
 require("dotenv").config();
 
 const app = express();
@@ -17,26 +18,33 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Set EJS as the view engine
+app.set("view engine", "ejs");
+
 app.get("/get", async (req, res) => {
   res.send('Hello World')
 });
 
 app.get("/sendmail", async (req, res) => {
   try {
-    // Read the email template file
-    const template = await fs.readFile("email-template.html", "utf-8");
+    // Read the HTML email template file
+    const template = await fs.readFile("email-template.ejs", "utf-8");
 
-    // Extract details from req.query
-    const { name, email, message } = req.query;
+    // Extract confirmed events from req.body
+    const confirmedEvents = req.query.confirmedEvents.split(",");
+    console.log(confirmedEvents)
+
+    // Render the EJS template with confirmed events data
+    const renderedTemplate = ejs.render(template, { confirmedEvents });
 
     const mailOptions = {
       from: {
         name: "Ecell VIT Bhopal",
         address: process.env.USER,
       },
-      to: email,
-      subject: "Hello ✔",
-      html: template.replace(/{name}/g, name).replace(/{email}/g, email).replace(/{message}/g, message), // Include the template content here with interpolated details
+      to: req.query.email,
+      subject: "Registration Confirmation",
+      html: renderedTemplate,
     };
 
     // Send email
