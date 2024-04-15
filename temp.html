@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap" rel="stylesheet">
+    <title>Registration Confirmation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            padding: 20px;
+            font-family: "Oxanium", sans-serif;
+        }
+        
+        .container {
+            border-radius: 40px;
+            width: 600px;
+            background: url('./form_background.png');
+            padding: 50px;
+            color: white;
+        }
+
+        .ecell-logo-container{
+            width: 100%;
+            text-align: left;
+        }
+
+        .ecell-logo-container img{
+            height: 80px;
+        }
+
+        .esummit-logo {
+            width: 500px;
+        }
+
+        .qr-code{
+            width: 200px;
+            margin: 10px;
+        }
+
+        .events{
+            list-style: none;
+        }
+    </style>
+</head>
+<body>
+    <center>
+    <div class="container">
+        <header>
+            <div class="ecell-logo-container">
+                <img class="ecell-logo" src="https://i.ibb.co/QkXB1Rk/ecell-logo-dark.png" alt="Ecell Logo">
+            </div>
+            <h2>Congratulations on your registration for</h2>
+            <img class="esummit-logo" src="https://i.ibb.co/cCZfRNn/Esummit.png" alt="Esummit Logo" />
+            <h3>We're thrilled to have you on board.</h3><br/><br/>
+        </header>
+    
+        <section>
+            <h3>Please present the following QR while attendinf the event:</h3>
+            <img clas="qr-code" src="<%= QRImg %>" alt="QR Code" />
+    
+            <br />
+            <br />
+    
+            <h2 style="color: #F200DE;">Confirmed Events:</h2>
+            <ul class="events">
+                <% confirmedEvents.forEach(event => { %>
+                    <li><%= event %></li>
+                <% }); %>
+            </ul>
+            <br/>
+            <br/>
+        </section>
+    
+        <footer>
+            <p>May your journey through these events be filled with inspiration, connection, and joyous moments that linger in your heart long after the curtains close.</p>
+        </footer>
+    </div>
+</center>
+</body>
+</html>

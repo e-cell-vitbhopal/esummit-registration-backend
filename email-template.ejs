@@ -3,30 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap" rel="stylesheet">
     <title>Registration Confirmation</title>
     <style>
-        /* Add your CSS styles here */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding: 20px;
+            font-family: "Oxanium", sans-serif;
+        }
+
+        .container {
+            border-radius: 40px;
+            width: 700px;
+            background: url('https://i.ibb.co/3Tp8SJ2/form-background.png');
+            padding: 50px;
+            color: white;
+        }
+
+        .ecell-logo-container img {
+            height: 80px;
+        }
+
+        .esummit-logo {
+            width: 500px;
+            margin-top: 10px;
+        }
+
+        .qr-code {
+            width: 200px;
+            margin: 20px 0;
+        }
+
+        .events {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .events li {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        footer {
+            font-size: 1.1rem;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        footer p {
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <img src="path/to/ecell_logo.png" alt="Ecell Logo">
-        <h1>Thank You For Registering</h1>
-        <img src="path/to/esummit_logo.png" alt="Esummit Logo">
-    </header>
+    <center>
+        <div class="container">
+            <header>
+                <div class="ecell-logo-container">
+                    <img class="ecell-logo" src="https://i.ibb.co/QkXB1Rk/ecell-logo-dark.png" alt="Ecell Logo">
+                </div>
+                <h2>Congratulations on your registration for</h2>
+                <img class="esummit-logo" src="https://i.ibb.co/cCZfRNn/Esummit.png" alt="Esummit Logo" />
+                <h3>We're thrilled to have you on board.</h3>
+            </header>
 
-    <section>
-        <h2>Confirmed Events:</h2>
-        <ul>
-            <% confirmedEvents.forEach(event => { %>
-                <li><%= event %></li>
-            <% }); %>
-        </ul>
-    </section>
+            <section>
+                <h3>Please present the following QR while attending the events:</h3>
+                <img class="qr-code" src="<%= QRImg %>" alt="QR Code" />
 
-    <footer>
-        <p>Regards,</p>
-        <p>Ecell</p>
-    </footer>
+                <h2 style="color: #F200DE;">Confirmed Events:</h2>
+                <ul class="events">
+                    <% confirmedEvents.forEach(event => { %>
+                        <li><%= event %></li>
+                    <% }); %>
+                </ul>
+            </section>
+
+            <footer>
+                <p>May your journey through these events be filled with inspiration, connection, and joyous moments that linger in your heart long after the curtains close.</p>
+                <p>Contact:</p>
+                <p>Shobhit Chavan: 81041 28267</p>
+                <p>Suhani Panda: 83289 85503</p>
+                <p>Pankaj Gour: 77422 83868</p>
+            </footer>
+        </div>
+    </center>
 </body>
 </html>

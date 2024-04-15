@@ -1,7 +1,9 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
-const fs = require("fs").promises; // Import the fs module
-const ejs = require("ejs"); // Import the EJS templating engine
+const fs = require("fs").promises;
+const ejs = require("ejs");
+const QRCode = require("qrcode");
+const crypto = require("crypto-js");
 require("dotenv").config();
 
 const app = express();
@@ -30,12 +32,29 @@ app.get("/sendmail", async (req, res) => {
     // Read the HTML email template file
     const template = await fs.readFile("email-template.ejs", "utf-8");
 
-    // Extract confirmed events from req.body
+    // Extract confirmed events from req.query
     const confirmedEvents = req.query.confirmedEvents.split(",");
-    console.log(confirmedEvents)
 
-    // Render the EJS template with confirmed events data
-    const renderedTemplate = ejs.render(template, { confirmedEvents });
+    // Generate QR code data
+    const qrData = {
+      name: req.query.name,
+      email: req.query.email,
+      regno: req.query.regno,
+      tranID: req.query.tranID,
+      confirmedEvents: confirmedEvents.join(", "),
+    };
+
+    const encryptionKey = process.env.ENCRYPTION_KEY;
+    const encryptedQRData = crypto.AES.encrypt(JSON.stringify(qrData), encryptionKey).toString(); // Convert encrypted data to string
+
+    // Generate QR code image as a Data URL (Base64)
+    let QRImg = await QRCode.toDataURL(encryptedQRData); // Pass encrypted data directly
+
+    // Render the EJS template with QR code image
+    const renderedTemplate = ejs.render(template, {
+      confirmedEvents,
+      QRImg,
+    });
 
     const mailOptions = {
       from: {
@@ -44,7 +63,8 @@ app.get("/sendmail", async (req, res) => {
       },
       to: req.query.email,
       subject: "Registration Confirmation",
-      html: renderedTemplate,
+      attachDataUrls: true,
+      html: renderedTemplate
     };
 
     // Send email
