@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer");
 const fs = require("fs").promises;
 const ejs = require("ejs");
 const QRCode = require("qrcode");
-const crypto = require("crypto-js");
+const crypto = require("crypto");
 require("dotenv").config();
 
 const app = express();
@@ -45,7 +45,11 @@ app.get("/sendmail", async (req, res) => {
     };
 
     const encryptionKey = process.env.ENCRYPTION_KEY;
-    const encryptedQRData = crypto.AES.encrypt(JSON.stringify(qrData), encryptionKey).toString(); // Convert encrypted data to string
+
+    // Encryption
+    const cipher = crypto.createCipher('aes-256-cbc', encryptionKey);
+    let encryptedQRData = cipher.update(JSON.stringify(qrData), 'utf8', 'hex');
+    encryptedQRData += cipher.final('hex');
 
     // Generate QR code image as a Data URL (Base64)
     let QRImg = await QRCode.toDataURL(encryptedQRData); // Pass encrypted data directly
@@ -55,6 +59,7 @@ app.get("/sendmail", async (req, res) => {
       confirmedEvents,
       QRImg,
     });
+    
 
     const mailOptions = {
       from: {
@@ -74,6 +79,27 @@ app.get("/sendmail", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Error sending email.");
+  }
+});
+
+app.get("/decrypt", (req, res) => {
+  try {
+    // Get the encrypted data string from the query parameters
+    const encryptedDataString = req.query.data;
+    console.log(encryptedDataString)
+
+    // Decrypt the data using the encryption key
+    const encryptionKey = process.env.ENCRYPTION_KEY;
+    const decipher = crypto.createDecipher('aes-256-cbc', encryptionKey);
+    let decryptedDataString = decipher.update(encryptedDataString, 'hex', 'utf8');
+    decryptedDataString += decipher.final('utf8');
+    console.log(decryptedDataString)
+
+    // Send the decrypted data string as a response
+    res.send(decryptedDataString);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error decrypting data.");
   }
 });
 
